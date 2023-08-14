@@ -1,0 +1,87 @@
+---
+trigger:
+  - master
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: Any CPU
+  buildConfiguration: Release
+  product_version_major: 1
+  product_version_minor: 111
+  product_version_revision: 0
+  product_version_noBuild: ${{format('{0}.{1}.{2}', variables.product_version_major, variables.product_version_minor, variables.product_version_revision)}}
+  product_version_BuildBase: ${{format('{0}-{1}', variables.product_version_noBuild,variables['Build.SourceBranch'])}}
+  product_version_build: $[counter(variables.product_version_BuildBase,0)]
+  product_version: $[format('{0}.{1}', variables.product_version_noBuild, variables.product_version_build)]
+  AppConfig.Info.ProductVersion: $[variables.product_version]
+  nuget_feeds: 'config'
+
+name: $(SourceBranchName)-$(product_version)-$(Date:yyyyMMdd).$(Rev:r)
+
+pool:
+  vmImage: windows-latest
+
+steps:
+
+  - task: NuGetToolInstaller@1
+    displayName: 'Install NuGet'
+    inputs:
+      versionSpec: '>=6.3.0-0'
+      checkLatest: true
+
+  - task: NuGetCommand@2
+    inputs:
+      restoreSolution: $(solution)
+      feedsToUse: $(nuget_feeds)
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build Solution'
+    inputs:
+      command: 'build'
+      projects: '$(solution)'
+      arguments: '--configuration $(BuildConfiguration) /p:AssemblyVersion=$(product_version) /p:Version=$(product_version)"' 
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Run Unit Tests'
+    inputs:
+      command: test
+      projects: '**/*Test.csproj'
+      arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'  
+ 
+  #Code Coverage 
+  - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
+    displayName: 'Install ReportGenerator tool'
+
+  - script: 'reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"'
+    displayName: 'Test Report'
+ 
+  - task: PublishCodeCoverageResults@1
+    displayName: 'Publish code coverage from $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml'
+    
+  - task: DotNetCoreCLI@2
+    displayName: 'Creating Simple Contact App artifact to publish'
+    inputs:
+      command: 'publish'
+      #false in order for the specific project to be published
+      publishWebProjects: False
+      zipAfterPublish: False
+      projects: '**/*Web.csproj'
+      arguments: '--configuration $(BuildConfiguration) /p:AssemblyVersion=$(product_version) /p:Version=$(product_version) --output $(Build.ArtifactStagingDirectory)'
+      
+  - task: FileTransform@1
+    displayName: 'Transform appsettings.json'
+    inputs:
+      folderPath: '$(Build.ArtifactStagingDirectory)'
+      targetFiles: '**/appsettings.json'
+      fileType: json
+      
+  - task: PublishPipelineArtifact@1
+    displayName: Publish SimpleContactsApp Artifact
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)
+      artifactName: SimpleContactsApp
+    condition: succeededOrFailed()
+    
