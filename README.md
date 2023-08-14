@@ -23,7 +23,7 @@ Azure SQL Database serves as the application's data store, seamlessly connected 
  ASP.NET pages and .NET Core backend use the same Redis cache for session storage. When a user logs in through UI, the application stores a unique identifier in the session, that identifier will be accessible in the shared Redis cache. When the user navigates to the .net core application, that unique identifier will be retrieved from the session and used to access user-specific data, like querying list of contacts and updating contacts. 
 Here are some pictures of Session keys in Redis: 
 
-![redis screenshot](https://github.com/brookhab/SimpleContactsApp/assets/11322420/82905027-5e25-45a6-a9d9-77b9330f0ae6)
+![redis screenshot](https://github.com/brookhab/SimpleContactsApp/assets/11322420/a744824f-68ea-46f6-a9fc-bcfc1dc23000)
 
 
 # Testing
@@ -34,37 +34,43 @@ Here are some pictures of Session keys in Redis:
 The application has a dedicated CI/CD pipeline that runs unit tests and generates a test report after each run. There is also a dedicated release pipeline that is connected to Azure App Service that will deploy upon successful completion of the build pipeline. 
 
 AzureDevops Build Pipeline 
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/d21dc90f-5c99-4a7f-86e5-1437a436bf7d)
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/a6ea706a-7b09-4261-869b-787e92675384)
 
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/cb2facf8-8f05-460c-85cf-0a1e48b1a3ff)
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/0cb3026a-aa10-4140-a0f3-e1c09f1a2570)
+
 
 Azure Devops Release Pipeline
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/ba803b77-2047-4f57-85c9-301ad79ac7b6)
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/8973d38e-a14c-41cc-ac80-2cc055755a5a)
+
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/91939b3d-c2fb-4c21-958a-3d22ba999424)
 
 # Deployment
 
 The Simple Contact App is hosted on Azure App Service. The entire deployment process, from setting up Resource Groups to configuring resources is created manually. Azure Key Vault securely stores the database connection string, enabling seamless authentication and retrieval during startup. Azure SQL Database efficiently manages the application's data, and Application Insights monitors the app's performance, providing real-time insights. 
 
 Below are a couple of screenshots showcasing the app's Azure integration:
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/f35efc03-8431-4f44-b78c-d2a96f26ffa5)
+Azure Resources
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/8e7b1fa7-3f61-4e86-bae3-2d87ab5769ec)
+
 Azure Redis
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/fcb5ae3b-47e3-4686-8e5c-f2d9272508b7)
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/a2305ad9-515b-4170-9e2c-b74ac109ae41)
+
 
 Azure App Service 
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/cbe5aa08-8ce7-438b-9056-27ae9c008370)
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/620ac1af-7ff5-4e00-870e-c4e7e25cfb79)
+
 
 Azure AppInsights
-![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/8d658745-b37c-4583-9d91-d1e220ce673a)
-
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/3e123d93-bcf4-49a3-958c-0df9c8363cf3)
 
 # Future Development and Enhancements 
 
-- [] Further refining the API to follow RESTful practices
-- [] Implementing filtering and sorting on both the API and UI fronts
-- [X] Introducing session management to enhance user experience
-- [] Enabling users to upload and manage user profiles using Azure Blob Storage
-- [X] Establishing CI/CD pipelines to automate deployment and run comprehensive unit tests using yamal scripts
-- [] Adding Iac using terraform for automatic creation of resources and reduce manual intervention 
+ - [ ] Further refining the API to follow RESTful practices
+ - [ ] Implementing filtering and sorting on both the API and UI fronts
+ - [X] Introducing session management to enhance user experience
+ - [ ] Enabling users to upload and manage user profiles using Azure Blob Storage
+ - [X] Establishing CI/CD pipelines to automate deployment and run comprehensive unit tests using yamal scripts
+ - [ ] Adding Iac using terraform for automatic creation of resources and reduce manual intervention 
 
 
 ## Thank you for exploring my App! 
