@@ -26,7 +26,6 @@ namespace SimpleContactsApp.Web
         public void ConfigureServices(IServiceCollection services)
         {
             // Add services to the container.
-            
             //Get configurations from Azure App Service application settings and register Keyvault Client with connection string
             services.Configure<AppServiceConfigurations>(Config.GetSection(AppServiceConfigurations.Section));
             services.AddScoped<IKeyVaultClient>(x => new KeyVaultClient(Config["KeyvaultUrl"]));
@@ -38,6 +37,7 @@ namespace SimpleContactsApp.Web
                 options.EnableAdaptiveSampling = false;
             });
 
+            services.AddHttpClient();
 
             //Registers Azure Distributed Redis Cache
             services.AddStackExchangeRedisCache(setupAction =>

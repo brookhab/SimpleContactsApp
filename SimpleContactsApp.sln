@@ -22,6 +22,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		azure-pipelines.yml = azure-pipelines.yml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleContactsApp.Web.UI", "SimpleContactsApp.Web.UI", "{9AA51CF2-5FB4-4C34-B37C-2399E5D63DAD}"
+	ProjectSection(SolutionItems) = preProject
+		SimpleContactsApp.Web.UI\asp2netbridge.asp = SimpleContactsApp.Web.UI\asp2netbridge.asp
+		SimpleContactsApp.Web.UI\contacts.asp = SimpleContactsApp.Web.UI\contacts.asp
+		SimpleContactsApp.Web.UI\create.asp = SimpleContactsApp.Web.UI\create.asp
+		SimpleContactsApp.Web.UI\details.asp = SimpleContactsApp.Web.UI\details.asp
+		SimpleContactsApp.Web.UI\edit.asp = SimpleContactsApp.Web.UI\edit.asp
+		SimpleContactsApp.Web.UI\index.asp = SimpleContactsApp.Web.UI\index.asp
+		SimpleContactsApp.Web.UI\login.asp = SimpleContactsApp.Web.UI\login.asp
+		SimpleContactsApp.Web.UI\register.asp = SimpleContactsApp.Web.UI\register.asp
+		SimpleContactsApp.Web.UI\test.asp = SimpleContactsApp.Web.UI\test.asp
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +71,7 @@ Global
 		{2A82A3B7-B79D-4122-B32D-451415A48C7A} = {7A8DDF5A-93FE-42A4-9E86-05F85B9C7C0A}
 		{B41487F4-FD87-46FC-A3EB-30CA001CFDD7} = {7A8DDF5A-93FE-42A4-9E86-05F85B9C7C0A}
 		{1BC035C0-C008-468B-9CC2-CC86AD617D1E} = {BE194ADE-52CF-478D-9BA5-4372CB41788C}
+		{9AA51CF2-5FB4-4C34-B37C-2399E5D63DAD} = {7A8DDF5A-93FE-42A4-9E86-05F85B9C7C0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1321BF97-9845-492B-87AD-5427BB5A7890}

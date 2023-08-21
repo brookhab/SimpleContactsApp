@@ -6,123 +6,101 @@ using System.Security.Claims;
 
 namespace SimpleContactsApp.Web.Controllers
 {
-    [Authorize]
-    public class ContactsController : Controller
+    [ApiController]
+    [Route("api/[controller]/[action]")]
+    public class ContactsController : ControllerBase
     {
         private readonly IContactService _contactService;
 
         public ContactsController(IContactService contactService)
         {
-            _contactService = contactService ?? throw new ArgumentNullException(nameof(contactService));
+            _contactService = contactService;
         }
-        public async Task<IActionResult> Index()
+
+        [HttpGet]
+        public async Task<IActionResult> Get()
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            var contacts = await _contactService.GetContactsAsync(userId!);
-            return View(contacts);
+            HttpContext.Request.Query.TryGetValue("userId",out var userId);
+            var contacts = await _contactService.GetContactsAsync(userId);
+            return Ok(contacts);
         }
 
         /*
         * Retrieve UserId from a session and use the searchTerm to look for contacts
         */
-        [HttpGet]
-        public async Task<IActionResult> Index(string searchTerm)
+        [HttpGet()]
+        public async Task<IActionResult> Search(string searchTerm)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            var contacts = await _contactService.SearchContactsAsync(userId!, searchTerm);
-            ViewData["SearchTerm"] = searchTerm;
-            return View(contacts);
-        }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
+            HttpContext.Request.Query.TryGetValue("userId", out var userId);
+            var contacts = await _contactService.SearchContactsAsync(userId, searchTerm);
+            return Ok(contacts);
         }
 
-        /*
-        * Retrieve UserId from a session and get create a new Contact.
-        */
         [HttpPost]
         public async Task<IActionResult> Create(Contact contact)
         {
             if (ModelState.IsValid)
             {
-                var userId = HttpContext.Session.GetString("UserId");
-                contact.UserId = userId!;
+                HttpContext.Request.Query.TryGetValue("userId", out var userId);
                 await _contactService.CreateContactAsync(contact);
-                return RedirectToAction(nameof(Index));
+                return CreatedAtAction(nameof(Get), new { id = contact.Id }, contact);
             }
-            return View(contact);
+            return BadRequest(ModelState);
         }
 
-        /*
-        * Retrieve UserId from a session and get a contact. 
-        */
+        [HttpGet("{id}")]
         public async Task<IActionResult> Edit(int id)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-            var contact = await _contactService.GetContactAsync(id, userId!);
+            HttpContext.Request.Query.TryGetValue("userId", out var userId);
+            var contact = await _contactService.GetContactAsync(id, userId);
             if (contact == null)
             {
                 return NotFound();
             }
-            return View(contact);
+            return Ok(contact);
         }
 
-        /*
-        * Retrieve a contact from db. 
-        */
-        [HttpPost]
-        public async Task<IActionResult> Edit(Contact contact)
+        [HttpPut]
+        public async Task<IActionResult> Update(Contact contact)
         {
             if (ModelState.IsValid)
             {
                 await _contactService.UpdateContactAsync(contact);
-                return RedirectToAction(nameof(Index));
+                return Ok();
             }
-            return View(contact);
+            return BadRequest(ModelState);
         }
 
-        /*
-        * Retrieve UserId from a session and get a contact. 
-        */
+        [HttpGet("{id}")]
         public async Task<IActionResult> Details(int id)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            var contact = await _contactService.GetContactAsync(id, userId!);
+            HttpContext.Request.Query.TryGetValue("userId", out var userId);
+            var contact = await _contactService.GetContactAsync(id, userId);
             if (contact == null)
             {
                 return NotFound();
             }
-            return View(contact);
+            return Ok(contact);
         }
 
-        /*
-        * Retrieve UserId from a session and get contact that will be removed. 
-        */
+        [HttpGet("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            var contact = await _contactService.GetContactAsync(id, userId!);
+            HttpContext.Request.Query.TryGetValue("userId", out var userId);
+            var contact = await _contactService.GetContactAsync(id, userId);
             if (contact == null)
             {
                 return NotFound();
             }
-            return View(contact);
+            return Ok(contact);
         }
 
-        /*
-         * Retrieve UserId from a session and remove contact from the database. 
-         */
-        [HttpPost, ActionName("Delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var userId = HttpContext.Session.GetString("UserId");
-
-            await _contactService.DeleteContactAsync(id, userId!);
-            return RedirectToAction(nameof(Index));
+            HttpContext.Request.Query.TryGetValue("userId", out var userId);
+            await _contactService.DeleteContactAsync(id, userId);
+            return NoContent();
         }
     }
 }

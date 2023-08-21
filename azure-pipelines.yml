@@ -16,13 +16,20 @@ variables:
   AppConfig.Info.ProductVersion: $[variables.product_version]
   nuget_feeds: 'config'
 
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: ''
+  imageRepository: 'simplecontactsapprepository'
+  containerRegistry: 'Simplecontactsapp container registry'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+
 name: $(SourceBranchName)-$(product_version)-$(Date:yyyyMMdd).$(Rev:r)
 
 pool:
-  vmImage: windows-latest
+  vmImage: 'windows-2019'
 
 steps:
-
   - task: NuGetToolInstaller@1
     displayName: 'Install NuGet'
     inputs:
@@ -48,6 +55,24 @@ steps:
       projects: '**/*Test.csproj'
       arguments: '--configuration $(buildConfiguration) --collect "XPlat Code coverage"'  
  
+  - task: CopyFiles@2
+    displayName: 'Copy Website Files'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/SimpleContactsApp.Web.UI' # Relative to the repository root
+      Contents: '**' # Copy all files and subdirectories
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/website' # Copy to a staging directory
+
+  - task: Docker@2
+    displayName: Build and push an image to container registry
+    inputs:
+      command: buildAndPush
+      repository: $(imageRepository)
+      dockerfile: $(dockerfilePath)
+      containerRegistry: $(containerRegistry)
+      buildContext: '$(Build.ArtifactStagingDirectory)/website' # Use the copied website files as build context
+      tags: |
+        $(tag)
+
   #Code Coverage 
   - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.5.8'
     displayName: 'Install ReportGenerator tool'
@@ -84,4 +109,3 @@ steps:
       targetPath: $(Build.ArtifactStagingDirectory)
       artifactName: SimpleContactsApp
     condition: succeededOrFailed()
-    
