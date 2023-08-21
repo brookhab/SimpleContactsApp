@@ -1,6 +1,6 @@
 # SimpleContactsApp
 
-Project URL: https://simplecontactapp.azurewebsites.net
+Project URL: https://simplecontactswebapp-asp.azurewebsites.net/index.asp
 
 # Introduction
 
@@ -8,7 +8,7 @@ The Simple Contact App is a straightforward demonstration of contact management,
 
 # Frontend
 
-The frontend user interface is crafted using ASP.NET Pages and enhanced with the Bootstrap library to provide a clean and intuitive look.
+The frontend user interface is crafted using Classic ASP pages and enhanced with the Bootstrap library to provide a clean and intuitive look.
 
 # Backend
 
@@ -18,17 +18,21 @@ The backend is developed with .NET Core, and its architecture follows the princi
 
 Azure SQL Database serves as the application's data store, seamlessly connected through Entity Framework. This integration enables us to apply various CRUD (Create, Read, Update, Delete) operations efficiently.
 
-# Session Sharing
+# Session Sharing Between Classic ASP and .NETCore
 
- ASP.NET pages and .NET Core backend use the same Redis cache for session storage. When a user logs in through UI, the application stores a unique identifier in the session, that identifier will be accessible in the shared Redis cache. When the user navigates to the .net core application, that unique identifier will be retrieved from the session and used to access user-specific data, like querying list of contacts and updating contacts. 
-Here are some pictures of Session keys in Redis: 
-
-![redis screenshot](https://github.com/brookhab/SimpleContactsApp/assets/11322420/a744824f-68ea-46f6-a9fc-bcfc1dc23000)
+When a user logs in through UI, the api will send a request witht he "userId" as a custom Session value via a request to Classic ASP Bridge. The Bridge is a small Classic ASP page that captures the userId that was sent as query parameter and stores it in the current session which makes it avaliable and accessiable for all other page that are under the same session. Then the UI uses the session value to make the basic CRUD operations for the given user.
 
 
 # Testing
 
  The core components, including Web, Application, and Infrastructure, are thoroughly tested. Mocking is facilitated using Moq, while Xunit serves as the testing framework. The test suite encompasses both unit and integration tests.
+
+# UI Contenerization
+The UI is contenerized using docker and deployed to its own hosting environment using Azure App Service via the CI/CD pipeline. Azure container Registery is also used to store the docker images as showen below :
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/34c44ef6-1727-41b9-97da-ca69634abe6b)
+
+![image](https://github.com/brookhab/SimpleContactsApp/assets/11322420/a2648eaf-3338-4159-8abd-a7937e2957f4)
+
 
 # CI/CD Pipelines
 The application has a dedicated CI/CD pipeline that runs unit tests and generates a test report after each run. There is also a dedicated release pipeline that is connected to Azure App Service that will deploy upon successful completion of the build pipeline. 
