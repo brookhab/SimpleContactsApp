@@ -4,7 +4,7 @@ Project URL: https://simplecontactswebapp-asp.azurewebsites.net/index.asp
 
 # Introduction
 
-The Simple Contact App is a straightforward demonstration of contact management, allowing users to store, retrieve, create, update, and delete contacts online. It empowers users with the ability to register and create accounts, granting them control over their contact lists. This application is built using SP.NET Core serving as the backend and ASP.NET Pages handling the frontend. The application is hosted on Azure, utilizing its cloud infrastructure for seamless deployment.
+The Simple Contact App is a straightforward demonstration of contact management, allowing users to store, retrieve, create, update, and delete contacts online. It empowers users with the ability to register and create accounts, granting them control over their contact lists. This application is built using SP.NET Core serving as the backend and Classic ASP Pages handling the frontend to demonstrate the Docker Contenerization and session sharing between two technologies in different time lines. The application is hosted on Azure, utilizing its cloud infrastructure for seamless deployment.
 
 # Frontend
 
